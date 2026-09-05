@@ -7,3 +7,4 @@ test-results/
 .vercel/
 .DS_Store
 *.tgz
+.vercel
