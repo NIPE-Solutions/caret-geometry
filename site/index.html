@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      name="description"
+      content="Reliable viewport coordinates for carets in inputs, textareas and editable DOM."
+    />
+    <title>Caret Geometry — Caret geometry for the web</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <header>
+      <a class="brand" href="/">NIPE / Caret Geometry</a>
+      <nav>
+        <a href="#api">API</a><a href="#support">Compatibility</a
+        ><a href="/lab.html">Calibration lab</a
+        ><a href="https://github.com/NIPE-Solutions/caret-geometry">GitHub</a>
+      </nav>
+    </header>
+    <main>
+      <section class="hero">
+        <div>
+          <p class="category">Browser primitive · 0 dependencies</p>
+          <h1>Caret geometry<br />for the web.</h1>
+          <p class="lede">
+            Reliable viewport coordinates for inputs, textareas and editable
+            DOM, with virtual anchors for floating UI.
+          </p>
+          <pre><code>npm install @nipe-solutions/caret-geometry</code></pre>
+        </div>
+        <div class="instrument">
+          <label for="hero-input">Move the caret</label
+          ><textarea id="hero-input" rows="5">
+Type @ to anchor an interface to this caret.</textarea>
+          <div id="hero-axis"><span></span><output></output></div>
+          <div id="hero-popup">Caret anchor</div>
+          <small>Measured live in your browser. Text stays on this page.</small>
+        </div>
+      </section>
+      <section class="flow">
+        <span>logical position</span><i></i><span>browser layout</span><i></i
+        ><span>caret rect</span><i></i><span>virtual anchor</span>
+      </section>
+      <section id="api">
+        <p class="section-number">01 / Start</p>
+        <h2>One function. One coordinate system.</h2>
+        <div class="split">
+          <div>
+            <p>
+              Every rectangle uses viewport-relative CSS pixels—the same
+              coordinate space as <code>getBoundingClientRect()</code>.
+            </p>
+            <pre><code>import { getCaretRect } from '@nipe-solutions/caret-geometry'
+
+const rect = getCaretRect(textarea)
+if (rect) popup.style.translate = `${rect.left}px ${rect.bottom}px`</code></pre>
+          </div>
+          <dl>
+            <dt>Text controls</dt>
+            <dd>
+              UTF-16 positions, backward selection focus, wrapping and internal
+              scroll.
+            </dd>
+            <dt>Editable DOM</dt>
+            <dd>
+              Native Range geometry first, conservative fallback for empty
+              boundaries.
+            </dd>
+            <dt>Floating UI</dt>
+            <dd>
+              Structural virtual elements with meaningful context elements. No
+              runtime coupling.
+            </dd>
+          </dl>
+        </div>
+      </section>
+      <section id="support">
+        <p class="section-number">02 / Compatibility</p>
+        <h2>Specific promises, visible caveats.</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Target</th>
+                <th>Status</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>input: text, tel, url</td>
+                <td>Supported</td>
+                <td>Explicit or current focus position</td>
+              </tr>
+              <tr>
+                <td>input: search</td>
+                <td>Caveats</td>
+                <td>Native decorations vary</td>
+              </tr>
+              <tr>
+                <td>input: password</td>
+                <td>Unsupported</td>
+                <td>Never mirrored</td>
+              </tr>
+              <tr>
+                <td>textarea</td>
+                <td>Supported</td>
+                <td>Wrap, tabs, scroll and RTL tested</td>
+              </tr>
+              <tr>
+                <td>Range / Selection</td>
+                <td>Supported</td>
+                <td>Selection defaults to focus</td>
+              </tr>
+              <tr>
+                <td>contenteditable</td>
+                <td>Caveats</td>
+                <td>Fallback may briefly insert a marker</td>
+              </tr>
+              <tr>
+                <td>Vertical writing / rotation</td>
+                <td>Experimental</td>
+                <td>Not a stable v1 guarantee</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section>
+        <p class="section-number">03 / Guarantees</p>
+        <h2>Built to disappear into your stack.</h2>
+        <ul class="guarantees">
+          <li>
+            Source value, focus, selection, scroll and styles stay unchanged.
+          </li>
+          <li>
+            No telemetry, network calls, stylesheet or framework dependency.
+          </li>
+          <li>
+            Mirror text exists only during synchronous measurement and is
+            cleared.
+          </li>
+          <li>
+            Safe Node and SSR import. Lazy DOM work only after a browser call.
+          </li>
+        </ul>
+        <a class="cta" href="/lab.html">Open the calibration lab</a>
+      </section>
+    </main>
+    <footer>
+      <span
+        >Part of
+        <a href="https://opensource.nipesolutions.com">NIPE Open Source</a> /
+        Browser Primitives</span
+      ><span
+        ><a href="https://nipesolutions.com/imprint">Imprint</a> ·
+        <a href="https://nipesolutions.com/privacy">Privacy</a></span
+      >
+    </footer>
+    <script type="module" src="/main.ts"></script>
+  </body>
+</html>

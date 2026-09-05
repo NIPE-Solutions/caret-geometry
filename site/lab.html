@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Caret Geometry Lab</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <main class="lab">
+      <a href="/">← Documentation</a>
+      <h1>Real-browser calibration lab</h1>
+      <p>Move the native caret. The cyan axis is the predicted rectangle.</p>
+      <label
+        >Textarea<textarea rows="6">
+first line
+second line</textarea></label
+      ><label
+        >Contenteditable
+        <div class="editable" contenteditable>
+          Editable text with <strong>nested markup</strong>.
+        </div></label
+      ><output id="diagnostic"></output>
+    </main>
+    <div id="marker"></div>
+    <script type="module" src="/lab.ts"></script>
+  </body>
+</html>

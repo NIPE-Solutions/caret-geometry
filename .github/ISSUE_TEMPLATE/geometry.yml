@@ -1,0 +1,30 @@
+name: Geometry report
+description: Report an incorrect caret rectangle using synthetic text.
+body:
+  - type: input
+    id: version
+    attributes: { label: Package version }
+    validations: { required: true }
+  - type: textarea
+    id: environment
+    attributes: { label: Browser, version, and OS }
+    validations: { required: true }
+  - type: dropdown
+    id: target
+    attributes:
+      {
+        label: Target,
+        options: [input, textarea, contenteditable, Range, Selection],
+      }
+  - type: textarea
+    id: reproduction
+    attributes:
+      {
+        label: Sanitized reproduction,
+        description: Include minimal HTML,
+        relevant CSS,
+        caret position,
+        expected/actual geometry,
+        and a URL if available. Never include sensitive real content.,
+      }
+    validations: { required: true }
