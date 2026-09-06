@@ -30,10 +30,14 @@ export function observeCaretGeometry(
   let frame = 0;
   let last: CaretRect | null | undefined;
   let disconnected = false;
+  let composing = false;
   const flush = () => {
     frame = 0;
     if (disconnected) return;
-    const next = getCaretRect(target, options);
+    const measurementOptions = composing
+      ? { ...options, markerFallback: "never" as const }
+      : options;
+    const next = getCaretRect(target, measurementOptions);
     if (last === undefined || !equal(last, next)) {
       last = next;
       callback(next);
@@ -52,13 +56,21 @@ export function observeCaretGeometry(
     "scroll",
     "focus",
     "blur",
-    "compositionstart",
     "compositionupdate",
-    "compositionend",
   ];
   for (const event of events)
     element?.addEventListener(event, update, { passive: true });
   doc?.addEventListener("selectionchange", update);
+  const startComposition = () => {
+    composing = true;
+    update();
+  };
+  const endComposition = () => {
+    composing = false;
+    update();
+  };
+  element?.addEventListener("compositionstart", startComposition);
+  element?.addEventListener("compositionend", endComposition);
   const MutationObserverConstructor = view?.MutationObserver;
   const mutations =
     MutationObserverConstructor &&
@@ -82,6 +94,8 @@ export function observeCaretGeometry(
       if (frame && view) view.cancelAnimationFrame(frame);
       for (const event of events) element?.removeEventListener(event, update);
       doc?.removeEventListener("selectionchange", update);
+      element?.removeEventListener("compositionstart", startComposition);
+      element?.removeEventListener("compositionend", endComposition);
       fonts?.removeEventListener?.("loadingdone", update);
       mutations?.disconnect();
     },

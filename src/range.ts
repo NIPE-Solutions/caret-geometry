@@ -7,7 +7,7 @@ export function collapseRange(range: Range, edge?: CaretEdge): Range {
       'A non-collapsed Range requires edge: "start" or "end".',
     );
   const result = range.cloneRange();
-  result.collapse(edge !== "start");
+  result.collapse(edge === "start");
   return result;
 }
 
