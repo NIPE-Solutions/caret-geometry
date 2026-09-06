@@ -1,11 +1,13 @@
 import * as caretGeometry from "../src/index";
+import labSource from "./lab.ts?raw";
+import { installCodeExamples } from "./show-code";
 const { getCaretRect, observeCaretGeometry } = caretGeometry;
 (
   window as typeof window & { __caretGeometry: typeof caretGeometry }
 ).__caretGeometry = caretGeometry;
 const targets = [
   ...document.querySelectorAll<HTMLTextAreaElement | HTMLElement>(
-    "textarea,[contenteditable]",
+    "input,textarea,[contenteditable]",
   ),
 ];
 const marker = document.querySelector<HTMLDivElement>("#marker")!;
@@ -42,3 +44,4 @@ for (const target of targets) {
   });
 }
 render();
+installCodeExamples({ lab: labSource });

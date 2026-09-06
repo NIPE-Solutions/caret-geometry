@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>React Anchored Layer integration — Caret Geometry</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <header>
+      <a class="brand" href="/">NIPE / Caret Geometry</a>
+      <nav>
+        <a href="/">Home</a><a href="/integrations/vanilla.html">Vanilla</a
+        ><a href="/integrations/floating-ui.html">Floating UI</a>
+      </nav>
+    </header>
+    <main class="doc-page">
+      <p class="section-number">Integrations / React Anchored Layer</p>
+      <h1>Compatibility status.</h1>
+      <p class="lede">
+        No production snippet is shown because the current React Anchored Layer
+        alpha accepts real element anchors only. It does not yet expose a
+        virtual-reference contract.
+      </p>
+      <div class="callout">
+        <strong>Verified gap:</strong> Caret Geometry can produce the reference,
+        but React Anchored Layer cannot currently consume it. The package is
+        also not yet published to npm. Inventing
+        <code>anchor={caret}</code> here would be misleading.
+      </div>
+      <h2>The smallest generic enhancement</h2>
+      <p>
+        React Anchored Layer can add support for an arbitrary Floating
+        UI-compatible virtual reference plus an external invalidation signal.
+        That design benefits caret anchors, pointer coordinates, canvas objects
+        and other observable virtual references without coupling either package.
+      </p>
+      <pre><code>// Proposed concept only — not current API
+virtualReference: VirtualElement
+subscribe?: (update: () =&gt; void) =&gt; () =&gt; void</code></pre>
+      <p>
+        This proposal belongs in React Anchored Layer. Caret Geometry should not
+        add React, portals, collision logic, or package-specific adapters.
+      </p>
+      <h2>Today’s React path</h2>
+      <p>
+        Use Caret Geometry with <code>@floating-ui/dom</code> inside a React
+        effect, or keep using React Anchored Layer for element-anchored
+        surfaces. The
+        <a href="/integrations/floating-ui.html">Floating UI pattern</a> is the
+        currently verified caret integration.
+      </p>
+    </main>
+  </body>
+</html>

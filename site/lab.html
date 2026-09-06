@@ -15,12 +15,27 @@
         >Textarea<textarea rows="6">
 first line
 second line</textarea></label
+      ><label>Input<input type="text" value="Move this caret" /></label
       ><label
         >Contenteditable
         <div class="editable" contenteditable>
           Editable text with <strong>nested markup</strong>.
         </div></label
       ><output id="diagnostic"></output>
+      <div class="code-example" data-code-example="lab">
+        <button
+          class="code-toggle"
+          data-code-toggle
+          aria-expanded="false"
+          aria-controls="lab-code"
+        >
+          Show code
+        </button>
+        <div id="lab-code" class="code-region" data-code-region hidden>
+          <button data-copy class="copy-button">Copy</button>
+          <pre><code></code></pre>
+        </div>
+      </div>
     </main>
     <div id="marker"></div>
     <script type="module" src="/lab.ts"></script>

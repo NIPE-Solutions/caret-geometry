@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta
       name="description"
-      content="Reliable viewport coordinates for carets in inputs, textareas and editable DOM."
+      content="Reliable caret coordinates for inputs, textareas and editable DOM. Build virtual references for mentions, autocomplete and floating UI."
     />
     <title>Caret Geometry — Caret geometry for the web</title>
     <link rel="stylesheet" href="/style.css" />
@@ -13,142 +13,318 @@
   <body>
     <header>
       <a class="brand" href="/">NIPE / Caret Geometry</a>
-      <nav>
-        <a href="#api">API</a><a href="#support">Compatibility</a
-        ><a href="/lab.html">Calibration lab</a
+      <nav aria-label="Main navigation">
+        <a href="#boundary">Concepts</a
+        ><a href="/integrations/floating-ui.html">Integrations</a
+        ><a href="/lab.html">Lab</a
         ><a href="https://github.com/NIPE-Solutions/caret-geometry">GitHub</a>
       </nav>
     </header>
     <main>
       <section class="hero">
         <div>
-          <p class="category">Browser primitive · 0 dependencies</p>
+          <p class="category">Browser primitive · 0 runtime dependencies</p>
           <h1>Caret geometry<br />for the web.</h1>
           <p class="lede">
             Reliable viewport coordinates for inputs, textareas and editable
-            DOM, with virtual anchors for floating UI.
+            DOM, with virtual references for floating UI.
           </p>
           <pre><code>npm install @nipe-solutions/caret-geometry</code></pre>
         </div>
         <div class="instrument">
-          <label for="hero-input">Move the caret</label
+          <label for="hero-input">Move the caret, then scroll this page</label
           ><textarea id="hero-input" rows="5">
 Type @ to anchor an interface to this caret.</textarea>
-          <div id="hero-axis"><span></span><output></output></div>
-          <div id="hero-popup">Caret anchor</div>
+          <p class="legend">
+            <span class="caret-key">Caret rect</span
+            ><span class="popup-key">Positioned popup</span>
+          </p>
           <small>Measured live in your browser. Text stays on this page.</small>
         </div>
       </section>
-      <section class="flow">
-        <span>logical position</span><i></i><span>browser layout</span><i></i
-        ><span>caret rect</span><i></i><span>virtual anchor</span>
+      <section class="api-layers" id="api">
+        <p class="section-number">01 / API layers</p>
+        <h2>Start with the smallest layer you need.</h2>
+        <div class="three-up">
+          <article>
+            <span>1 / Snapshot</span>
+            <h3><code>getCaretRect()</code></h3>
+            <p>You need the caret geometry now.</p>
+          </article>
+          <article>
+            <span>2 / Virtual reference</span>
+            <h3><code>createCaretVirtualElement()</code></h3>
+            <p>
+              Another library expects a live
+              <code>getBoundingClientRect()</code> reference.
+            </p>
+          </article>
+          <article>
+            <span>3 / Observation</span>
+            <h3><code>observeCaretGeometry()</code></h3>
+            <p>You need to know when the caret itself changes.</p>
+          </article>
+        </div>
+        <div class="code-example" data-code-example="snapshot">
+          <button
+            class="code-toggle"
+            data-code-toggle
+            aria-expanded="false"
+            aria-controls="snapshot-code"
+          >
+            Show code
+          </button>
+          <div id="snapshot-code" class="code-region" data-code-region hidden>
+            <button data-copy class="copy-button">Copy</button>
+            <pre><code></code></pre>
+          </div>
+        </div>
       </section>
-      <section id="api">
-        <p class="section-number">01 / Start</p>
-        <h2>One function. One coordinate system.</h2>
+      <section id="boundary">
+        <p class="section-number">02 / Responsibility boundary</p>
+        <h2>Geometry and positioning are different jobs.</h2>
+        <p class="boundary-line">
+          Caret Geometry tracks the caret. Your positioning engine tracks the
+          world around it.
+        </p>
+        <div class="pipeline">
+          <div>&lt;textarea&gt;</div>
+          <b>↓ <small>Caret Geometry</small></b>
+          <div>Caret rect / virtual reference</div>
+          <b>↓ <small>Positioning engine</small></b>
+          <div>Mention / slash / autocomplete popup</div>
+        </div>
+        <div class="responsibility-panels">
+          <article>
+            <h3>Caret changed</h3>
+            <p>
+              Typing · arrow keys · selection · mouse caret movement · internal
+              input/textarea scroll · composition / IME
+            </p>
+            <strong>Caret Geometry → update</strong>
+          </article>
+          <article>
+            <h3>Environment changed</h3>
+            <p>
+              Page or modal scroll · ancestor scroll · window resize · layout
+              shift · floating-content resize · collision / flip / shift
+            </p>
+            <strong>Positioning engine → update</strong>
+          </article>
+        </div>
+        <p class="one-update">
+          Both feed one <code>updatePosition()</code> function.
+        </p>
+      </section>
+      <section class="why">
+        <p class="section-number">03 / Why compose them?</p>
+        <h2>Why doesn’t Floating UI solve this already?</h2>
         <div class="split">
           <div>
             <p>
-              Every rectangle uses viewport-relative CSS pixels—the same
-              coordinate space as <code>getBoundingClientRect()</code>.
+              Floating-positioning libraries answer: “Given this reference
+              rectangle, where should the floating element go?” They handle
+              placement, collision, scroll, resize and layout movement.
             </p>
-            <pre><code>import { getCaretRect } from '@nipe-solutions/caret-geometry'
-
-const rect = getCaretRect(textarea)
-if (rect) popup.style.translate = `${rect.left}px ${rect.bottom}px`</code></pre>
+            <p>
+              Inputs and textareas have no native caret element. The browser
+              exposes a value and selection indices—not
+              <code>caretElement.getBoundingClientRect()</code>. Caret Geometry
+              supplies that missing reference.
+            </p>
           </div>
-          <dl>
-            <dt>Text controls</dt>
-            <dd>
-              UTF-16 positions, backward selection focus, wrapping and internal
-              scroll.
-            </dd>
-            <dt>Editable DOM</dt>
-            <dd>
-              Native Range geometry first, conservative fallback for empty
-              boundaries.
-            </dd>
-            <dt>Floating UI</dt>
-            <dd>
-              Structural virtual elements with meaningful context elements. No
-              runtime coupling.
-            </dd>
-          </dl>
+          <div class="caret-diagram">
+            <span>INPUT ELEMENT</span>
+            <div>Hello @nich<i></i></div>
+            <dl>
+              <dt>caret rect</dt>
+              <dd>x 248.5 · y 184 · h 20</dd>
+              <dt>composes with</dt>
+              <dd>Floating UI / Anchored Layer</dd>
+            </dl>
+            <aside>Nicholas<br />Nicole<br />Nick</aside>
+          </div>
+        </div>
+        <div class="timeline-grid">
+          <article>
+            <h3>User types</h3>
+            <p>
+              input → caret moves → <code>observeCaretGeometry()</code> → update
+            </p>
+          </article>
+          <article>
+            <h3>User scrolls a modal</h3>
+            <p>ancestor scroll → positioner auto-update → update</p>
+          </article>
+        </div>
+        <p class="callout">
+          <strong><code>autoUpdate()</code> alone is not enough:</strong> typing
+          can move the virtual reference while the textarea, viewport and
+          ancestors stay still. The reverse is also true: caret observation
+          alone cannot see the page move around it.
+        </p>
+      </section>
+      <section id="integration">
+        <p class="section-number">04 / Correct integration</p>
+        <h2>One live reference. Two update sources.</h2>
+        <div class="code-example" data-code-example="floating">
+          <div class="code-summary">
+            <p>
+              <code>createCaretVirtualElement()</code> provides live
+              geometry.<br /><code>observeCaretGeometry()</code> detects
+              caret-local changes.<br /><code>autoUpdate()</code> detects
+              environmental changes.<br /><code>computePosition()</code> places
+              the popup.
+            </p>
+            <button
+              class="code-toggle"
+              data-code-toggle
+              aria-expanded="false"
+              aria-controls="floating-code"
+            >
+              Show code
+            </button>
+          </div>
+          <div id="floating-code" class="code-region" data-code-region hidden>
+            <button data-copy class="copy-button">Copy</button>
+            <pre><code></code></pre>
+          </div>
+        </div>
+        <p>
+          <a class="cta" href="/integrations/floating-ui.html"
+            >Read the Floating UI guide</a
+          >
+        </p>
+      </section>
+      <section id="stress">
+        <p class="section-number">05 / Positioning stress test</p>
+        <h2>Keep it attached.</h2>
+        <p>
+          Type, move the caret, scroll either surface, or change its typography.
+          Cyan is geometry; orange is positioning.
+        </p>
+        <div class="stress-shell">
+          <div class="stress-controls">
+            <label
+              >Font size
+              <input
+                id="stress-font"
+                type="range"
+                min="14"
+                max="28"
+                value="18" /></label
+            ><label
+              >Line height
+              <input
+                id="stress-line"
+                type="range"
+                min="1"
+                max="2"
+                step="0.1"
+                value="1.5" /></label
+            ><label><input id="stress-rtl" type="checkbox" /> RTL</label>
+          </div>
+          <div class="nested-scroll">
+            <div class="scroll-spacer">Scroll this container ↓</div>
+            <textarea id="stress-input" rows="4">
+A long editable line for internal scrolling and wrapping. Move this caret, resize the window, and try to break the attachment.</textarea>
+            <div class="scroll-spacer">Environment movement lives here.</div>
+          </div>
+          <output id="stress-readout" class="raw-readout"></output>
+        </div>
+        <div class="code-example" data-code-example="floating">
+          <button
+            class="code-toggle"
+            data-code-toggle
+            aria-expanded="false"
+            aria-controls="stress-code"
+          >
+            Show code
+          </button>
+          <div id="stress-code" class="code-region" data-code-region hidden>
+            <button data-copy class="copy-button">Copy</button>
+            <pre><code></code></pre>
+          </div>
         </div>
       </section>
-      <section id="support">
-        <p class="section-number">02 / Compatibility</p>
-        <h2>Specific promises, visible caveats.</h2>
+      <section id="responsibilities">
+        <p class="section-number">06 / Responsibility matrix</p>
+        <h2>Caret Geometry deliberately stops at the caret rectangle.</h2>
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
-                <th>Target</th>
-                <th>Status</th>
-                <th>Notes</th>
+                <th>Concern</th>
+                <th>Caret Geometry</th>
+                <th>Positioning / overlay layer</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>input: text, tel, url</td>
-                <td>Supported</td>
-                <td>Explicit or current focus position</td>
+                <td>Locate input, textarea or editable caret</td>
+                <td>✓</td>
+                <td>—</td>
               </tr>
               <tr>
-                <td>input: search</td>
-                <td>Caveats</td>
-                <td>Native decorations vary</td>
+                <td>Typing, selection and internal-control scroll</td>
+                <td>✓</td>
+                <td>—</td>
               </tr>
               <tr>
-                <td>input: password</td>
-                <td>Unsupported</td>
-                <td>Never mirrored</td>
+                <td>Page/ancestor scroll and layout shift</td>
+                <td>—</td>
+                <td>✓</td>
               </tr>
               <tr>
-                <td>textarea</td>
-                <td>Supported</td>
-                <td>Wrap, tabs, scroll and RTL tested</td>
+                <td>Collision, flip and shift</td>
+                <td>—</td>
+                <td>✓</td>
               </tr>
               <tr>
-                <td>Range / Selection</td>
-                <td>Supported</td>
-                <td>Selection defaults to focus</td>
-              </tr>
-              <tr>
-                <td>contenteditable</td>
-                <td>Caveats</td>
-                <td>Fallback may briefly insert a marker</td>
-              </tr>
-              <tr>
-                <td>Vertical writing / rotation</td>
-                <td>Experimental</td>
-                <td>Not a stable v1 guarantee</td>
+                <td>Portal rendering and interaction semantics</td>
+                <td>—</td>
+                <td>Framework / application</td>
               </tr>
             </tbody>
           </table>
         </div>
+        <div class="decision">
+          <h3>Do I need Caret Geometry?</h3>
+          <p>
+            Popup next to the input box? <strong>No.</strong> Use the element
+            directly.
+          </p>
+          <p>Popup next to the caret inside it? <strong>Yes.</strong></p>
+          <p>
+            Need collision, flip or portals?
+            <strong>Add a positioning or overlay layer.</strong>
+          </p>
+        </div>
       </section>
-      <section>
-        <p class="section-number">03 / Guarantees</p>
-        <h2>Built to disappear into your stack.</h2>
-        <ul class="guarantees">
-          <li>
-            Source value, focus, selection, scroll and styles stay unchanged.
-          </li>
-          <li>
-            No telemetry, network calls, stylesheet or framework dependency.
-          </li>
-          <li>
-            Mirror text exists only during synchronous measurement and is
-            cleared.
-          </li>
-          <li>
-            Safe Node and SSR import. Lazy DOM work only after a browser call.
-          </li>
-        </ul>
-        <a class="cta" href="/lab.html">Open the calibration lab</a>
+      <section class="links">
+        <p class="section-number">07 / Continue</p>
+        <h2>Use the integration that fits your stack.</h2>
+        <div class="three-up">
+          <a href="/integrations/vanilla.html"
+            ><strong>Vanilla</strong><span>Geometry only</span></a
+          ><a href="/integrations/floating-ui.html"
+            ><strong>Floating UI</strong><span>Production positioning</span></a
+          ><a href="/integrations/react-anchored-layer.html"
+            ><strong>React Anchored Layer</strong
+            ><span>Current compatibility status</span></a
+          >
+        </div>
+        <p class="dependency-note">
+          No React required. No Floating UI required. No runtime dependencies.
+        </p>
       </section>
     </main>
+    <div id="hero-axis" class="caret-marker">
+      <output id="hero-readout"></output>
+    </div>
+    <div id="hero-popup" class="demo-popup">Caret anchor</div>
+    <div id="stress-marker" class="caret-marker"></div>
+    <div id="stress-popup" class="demo-popup stress-popup">Suggestions</div>
     <footer>
       <span
         >Part of

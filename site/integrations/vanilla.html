@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Vanilla integration — Caret Geometry</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <header>
+      <a class="brand" href="/">NIPE / Caret Geometry</a>
+      <nav>
+        <a href="/">Home</a
+        ><a href="/integrations/floating-ui.html">Floating UI</a
+        ><a href="/lab.html">Lab</a>
+      </nav>
+    </header>
+    <main class="doc-page">
+      <p class="section-number">Integrations / Vanilla</p>
+      <h1>Geometry without a positioner.</h1>
+      <p class="lede">
+        Read the caret rectangle directly when simple viewport placement is
+        enough.
+      </p>
+      <pre><code>const update = () =&gt; {
+  const rect = getCaretRect(textarea)
+  popup.hidden = !rect
+  if (!rect) return
+  popup.style.left = `${rect.left}px`
+  popup.style.top = `${rect.bottom + 6}px`
+}
+
+const observer = observeCaretGeometry(textarea, update)
+update()
+
+// cleanup
+observer.disconnect()</code></pre>
+      <div class="callout">
+        This is fine for a small indicator. It does not add collision handling,
+        flipping, or environmental tracking. Add a positioning engine when those
+        matter.
+      </div>
+      <h2>Input controls and editable DOM</h2>
+      <p>
+        For inputs and textareas, Caret Geometry performs text-control
+        measurement. For contenteditable, Range and Selection, it uses
+        browser-native geometry wherever possible. The same rectangle contract
+        reaches your positioning code.
+      </p>
+      <h2>Use the element instead when appropriate</h2>
+      <p>
+        If the popup belongs next to the input box rather than the caret inside
+        it, pass the input element directly to your positioner. Caret Geometry
+        is unnecessary in that case.
+      </p>
+    </main>
+  </body>
+</html>

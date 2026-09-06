@@ -24,7 +24,8 @@ export type CaretTarget =
 export interface CaretVirtualElement {
   readonly contextElement?: Element;
   getBoundingClientRect(): CaretRect;
-  getClientRects(): readonly CaretRect[];
+  /** Mutable array for structural compatibility with Floating UI VirtualElement. */
+  getClientRects(): CaretRect[];
   getCaretRect(): CaretRect | null;
   isValid(): boolean;
 }

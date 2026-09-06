@@ -16,6 +16,32 @@
 body {
   margin: 0;
 }
+.doc-page {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 86px clamp(20px, 6vw, 72px);
+}
+.doc-page h1 {
+  font-size: clamp(52px, 8vw, 96px);
+}
+.doc-page h2 {
+  margin-top: 88px;
+  margin-bottom: 32px;
+}
+.doc-page p,
+.doc-page li {
+  font-size: 18px;
+  line-height: 1.65;
+}
+.doc-page pre {
+  margin: 32px 0;
+}
+.doc-page dt {
+  font-size: 18px;
+}
+.doc-page dd {
+  margin-bottom: 22px;
+}
 a {
   color: inherit;
   text-underline-offset: 4px;
@@ -75,6 +101,10 @@ h2 {
   max-width: 800px;
   margin: 24px 0 64px;
 }
+h3 {
+  font-size: 22px;
+  letter-spacing: -0.025em;
+}
 .lede {
   font-size: 21px;
   line-height: 1.5;
@@ -96,6 +126,7 @@ pre {
   border: 1px solid var(--ink);
 }
 textarea,
+.lab input[type="text"],
 .editable {
   display: block;
   width: 100%;
@@ -209,6 +240,13 @@ footer {
   pointer-events: none;
   z-index: 20;
 }
+#stress-marker {
+  position: fixed;
+  z-index: 20;
+  width: 2px;
+  background: var(--cyan);
+  pointer-events: none;
+}
 #hero-axis span {
   position: absolute;
   width: 54px;
@@ -239,6 +277,267 @@ footer {
     monospace;
   z-index: 19;
 }
+.demo-popup {
+  position: fixed;
+  z-index: 19;
+  background: var(--ink);
+  color: white;
+  padding: 10px 14px;
+  font:
+    12px ui-monospace,
+    monospace;
+}
+.caret-marker {
+  position: fixed;
+  width: 2px;
+  background: var(--cyan);
+  pointer-events: none;
+  z-index: 20;
+}
+#hero-axis {
+  transform: none !important;
+}
+#hero-axis output {
+  white-space: nowrap;
+}
+.three-up {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid var(--line);
+}
+.three-up > * {
+  padding: 28px;
+  border-right: 1px solid var(--line);
+  color: inherit;
+  text-decoration: none;
+}
+.three-up > *:last-child {
+  border: 0;
+}
+.three-up span {
+  display: block;
+  font:
+    12px ui-monospace,
+    monospace;
+  color: #4b5b52;
+}
+.boundary-line {
+  max-width: 900px;
+  font-size: clamp(24px, 3vw, 42px);
+  line-height: 1.2;
+}
+.pipeline {
+  display: grid;
+  justify-content: center;
+  gap: 12px;
+  margin: 64px auto;
+  max-width: 660px;
+  text-align: center;
+}
+.pipeline div {
+  border: 1px solid var(--ink);
+  background: var(--panel);
+  padding: 18px;
+}
+.pipeline b {
+  color: var(--signal);
+  font-size: 24px;
+}
+.pipeline small {
+  color: var(--ink);
+  margin-left: 10px;
+}
+.responsibility-panels,
+.timeline-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  border: 1px solid var(--line);
+  background: var(--line);
+}
+.responsibility-panels article,
+.timeline-grid article {
+  padding: 32px;
+  background: var(--paper);
+  line-height: 1.6;
+}
+.responsibility-panels strong {
+  color: #00767d;
+}
+.one-update {
+  margin: 0;
+  padding: 20px;
+  text-align: center;
+  border: 1px solid var(--line);
+  border-top: 0;
+}
+.caret-diagram {
+  position: relative;
+  border: 1px solid var(--ink);
+  padding: 28px;
+  background: var(--panel);
+  font:
+    13px/1.7 ui-monospace,
+    monospace;
+}
+.caret-diagram > div {
+  margin: 16px 0;
+  padding: 20px;
+  background: white;
+  border: 1px solid var(--ink);
+  font-size: 18px;
+}
+.caret-diagram i {
+  display: inline-block;
+  width: 2px;
+  height: 20px;
+  vertical-align: middle;
+  background: var(--cyan);
+}
+.caret-diagram aside {
+  margin-top: 20px;
+  margin-left: 85px;
+  border-left: 3px solid var(--signal);
+  padding: 14px 20px;
+  background: var(--ink);
+  color: white;
+}
+.callout,
+.decision {
+  padding: 28px;
+  margin-top: 30px;
+  border-left: 4px solid var(--signal);
+  background: var(--panel);
+  line-height: 1.6;
+}
+.timeline-grid {
+  margin-top: 40px;
+}
+.code-example {
+  margin-top: 28px;
+}
+.code-summary {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 30px;
+}
+.code-summary p {
+  line-height: 1.8;
+}
+button {
+  font: inherit;
+}
+.code-toggle,
+.copy-button {
+  border: 1px solid var(--ink);
+  background: transparent;
+  color: var(--ink);
+  padding: 12px 18px;
+  cursor: pointer;
+}
+.code-toggle:focus-visible,
+.copy-button:focus-visible {
+  outline: 3px solid var(--cyan);
+  outline-offset: 3px;
+}
+.code-region {
+  position: relative;
+  margin-top: 14px;
+  max-width: 100%;
+}
+.code-region[hidden] {
+  display: none;
+}
+.code-region pre {
+  max-height: 560px;
+  margin: 0;
+  overflow: auto;
+}
+.copy-button {
+  position: absolute;
+  z-index: 2;
+  top: 12px;
+  right: 12px;
+  color: white;
+  border-color: #809087;
+  background: var(--ink);
+}
+.stress-shell {
+  border: 1px solid var(--ink);
+  background: var(--panel);
+  padding: 22px;
+}
+.stress-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  align-items: center;
+  margin-bottom: 18px;
+}
+.stress-controls label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.nested-scroll {
+  height: 260px;
+  overflow: auto;
+  border: 1px solid var(--line);
+  padding: 20px;
+  background: #f7faf5;
+}
+.nested-scroll textarea {
+  min-width: 520px;
+}
+.scroll-spacer {
+  height: 110px;
+  font:
+    12px ui-monospace,
+    monospace;
+  color: #65746b;
+}
+.raw-readout {
+  display: block;
+  margin-top: 14px;
+  font:
+    12px ui-monospace,
+    monospace;
+}
+.legend {
+  display: flex;
+  gap: 20px;
+  font:
+    12px ui-monospace,
+    monospace;
+}
+.legend span::before {
+  content: "";
+  display: inline-block;
+  width: 12px;
+  height: 3px;
+  margin-right: 7px;
+  vertical-align: middle;
+}
+.caret-key::before {
+  background: var(--cyan);
+}
+.popup-key::before {
+  background: var(--signal);
+}
+.stress-popup {
+  border-left: 3px solid var(--signal);
+}
+.links .three-up strong {
+  display: block;
+  margin-bottom: 8px;
+}
+.dependency-note {
+  margin-top: 30px;
+  font:
+    13px ui-monospace,
+    monospace;
+}
 .lab {
   max-width: 900px;
   margin: auto;
@@ -267,8 +566,21 @@ footer {
     display: none;
   }
   .hero,
-  .split {
+  .split,
+  .three-up,
+  .responsibility-panels,
+  .timeline-grid {
     grid-template-columns: 1fr;
+  }
+  .three-up > * {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .code-summary {
+    display: block;
+  }
+  .code-toggle {
+    width: 100%;
   }
   .hero {
     padding-top: 60px;

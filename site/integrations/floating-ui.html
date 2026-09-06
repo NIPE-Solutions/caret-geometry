@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Floating UI integration — Caret Geometry</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <header>
+      <a class="brand" href="/">NIPE / Caret Geometry</a>
+      <nav>
+        <a href="/">Home</a><a href="/integrations/vanilla.html">Vanilla</a
+        ><a href="/integrations/react-anchored-layer.html">React</a>
+      </nav>
+    </header>
+    <main class="doc-page">
+      <p class="section-number">Integrations / Floating UI</p>
+      <h1>A caret reference for Floating UI.</h1>
+      <p class="lede">
+        Floating UI intentionally starts with reference geometry. Caret Geometry
+        supplies that geometry for browser carets.
+      </p>
+      <p class="boundary-line">
+        Caret Geometry tracks the caret. Your positioning engine tracks the
+        world around it.
+      </p>
+      <h2>Minimal production pattern</h2>
+      <pre><code id="floating-source"></code></pre>
+      <h2>One update function</h2>
+      <div class="responsibility-panels">
+        <article>
+          <h3>Caret-local invalidation</h3>
+          <p>
+            <code>observeCaretGeometry()</code> covers typing, selection
+            movement, composition and internal control scroll.
+          </p>
+        </article>
+        <article>
+          <h3>Environmental invalidation</h3>
+          <p>
+            <code>autoUpdate()</code> covers ancestor scroll, resize and layout
+            movement. Both invoke the same positioning path.
+          </p>
+        </article>
+      </div>
+      <h2>Why <code>contextElement</code> matters</h2>
+      <p>
+        The virtual reference includes the real editable as its
+        <code>contextElement</code>. A positioner can use that element to
+        discover scroll and clipping ancestors and layout context. It does not
+        tell the positioner that typing moved the caret—that is why caret
+        observation remains separate.
+      </p>
+      <h2>Common mistakes</h2>
+      <div class="three-up">
+        <article>
+          <h3>Only compute once</h3>
+          <p>The initial placement is correct, then every change is stale.</p>
+        </article>
+        <article>
+          <h3>Only auto-update</h3>
+          <p>
+            Scroll follows, but typing or arrow movement may not cause an
+            environmental event.
+          </p>
+        </article>
+        <article>
+          <h3>Only observe the caret</h3>
+          <p>
+            Typing follows, but page or modal scroll leaves the popup stale.
+          </p>
+        </article>
+      </div>
+      <h2>Integration checklist</h2>
+      <ul>
+        <li>Create one virtual reference for the target lifecycle.</li>
+        <li>Position the popup relative to it.</li>
+        <li>Subscribe to caret-local and environmental changes.</li>
+        <li>Hide when <code>getCaretRect()</code> reports unavailable.</li>
+        <li>Disconnect both subscriptions.</li>
+      </ul>
+      <h2>Troubleshooting</h2>
+      <dl>
+        <dt>Popup appears at the top-left</dt>
+        <dd>
+          Do not position before a valid caret exists. Hide until geometry is
+          available.
+        </dd>
+        <dt>Popup follows the input edge, not the caret</dt>
+        <dd>
+          Pass the caret virtual reference—not the input element—as the
+          reference.
+        </dd>
+        <dt>Popup follows typing but not page scroll</dt>
+        <dd>Add the positioning engine’s environmental auto-update.</dd>
+        <dt>Popup follows scroll but not arrow keys</dt>
+        <dd>Add <code>observeCaretGeometry()</code>.</dd>
+      </dl>
+      <p>
+        Floating UI is a site/dev integration dependency only. The Caret
+        Geometry runtime remains dependency-free.
+        <a href="https://floating-ui.com/docs/virtual-elements"
+          >Floating UI virtual element documentation →</a
+        >
+      </p>
+    </main>
+    <script type="module" src="/integration-docs.ts"></script>
+  </body>
+</html>

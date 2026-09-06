@@ -12,6 +12,12 @@ export default defineConfig({
       input: {
         main: resolve(directory, "index.html"),
         lab: resolve(directory, "lab.html"),
+        vanilla: resolve(directory, "integrations/vanilla.html"),
+        floatingUi: resolve(directory, "integrations/floating-ui.html"),
+        reactAnchoredLayer: resolve(
+          directory,
+          "integrations/react-anchored-layer.html",
+        ),
       },
     },
   },
