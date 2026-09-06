@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <style>
+    .surface { fill: #17211d }
+    .measure { stroke: #edf1eb }
+    @media (prefers-color-scheme: dark) {
+      .surface { fill: #edf1eb }
+      .measure { stroke: #17211d }
+    }
+  </style>
+  <rect class="surface" width="64" height="64" rx="10"/>
+  <path class="measure" d="M13 17h28M13 47h28" fill="none" stroke-width="3" opacity=".52"/>
+  <path d="M34 12v40" stroke="#00aeb8" stroke-width="7"/>
+  <path d="M46 43h8v8" fill="none" stroke="#ff4d2e" stroke-width="4"/>
+</svg>

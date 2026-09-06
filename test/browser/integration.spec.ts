@@ -85,3 +85,40 @@ test("integration guide states both update responsibilities", async ({
     "caretObserver.disconnect",
   );
 });
+
+test("hero describes caret movement and exposes the complete tab icon set", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(
+    page.getByText(
+      "Click, type, or use arrow keys—the anchor follows your caret.",
+    ),
+  ).toBeVisible();
+  await expect(
+    page.getByText("Type @ to anchor an interface to this caret."),
+  ).toHaveCount(0);
+
+  const metadata = await page.evaluate(() => ({
+    icons: Array.from(
+      document.querySelectorAll<HTMLLinkElement>('link[rel="icon"]'),
+    ).map(({ href, media, type }) => ({ href, media, type })),
+    apple: document.querySelector<HTMLLinkElement>(
+      'link[rel="apple-touch-icon"]',
+    )?.href,
+    manifest: document.querySelector<HTMLLinkElement>('link[rel="manifest"]')
+      ?.href,
+  }));
+  expect(metadata.icons).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({
+        href: expect.stringContaining("/favicon.svg"),
+      }),
+      expect.objectContaining({
+        href: expect.stringContaining("/favicon.ico"),
+      }),
+    ]),
+  );
+  expect(metadata.apple).toContain("/apple-touch-icon.png");
+  expect(metadata.manifest).toContain("/site.webmanifest");
+});
