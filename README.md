@@ -4,6 +4,8 @@ Caret geometry for the web.
 
 Reliable viewport coordinates for carets in inputs, textareas and editable DOM.
 
+[![CI](https://github.com/NIPE-Solutions/caret-geometry/actions/workflows/ci.yml/badge.svg)](https://github.com/NIPE-Solutions/caret-geometry/actions/workflows/ci.yml)
+
 ```bash
 npm install @nipe-solutions/caret-geometry
 ```
@@ -27,6 +29,8 @@ observeCaretGeometry(target, callback, options?): CaretGeometryObserver
 Non-collapsed `Range` targets require `edge: 'start' | 'end'`. Unsupported input types throw `UnsupportedInputTypeError`; out-of-bounds positions throw `InvalidCaretPositionError`. Supported targets without current layout or a relevant selection return `null`.
 
 Password inputs are deliberately unsupported and are rejected before their value is mirrored. See [compatibility](docs/compatibility.md), [security and privacy](docs/security-and-privacy.md), and the [architecture](docs/architecture.md).
+
+Current status: **ALPHA READY**. See [release readiness](docs/release-readiness.md) for the evidence and remaining stable-release gates.
 
 Part of [NIPE Open Source](https://opensource.nipesolutions.com) in Browser Primitives.
 
