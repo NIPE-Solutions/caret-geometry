@@ -1,17 +1,23 @@
-# Real-browser QA
+# Browser QA
 
-| Platform         | Automation                     | Manual status                           |
-| ---------------- | ------------------------------ | --------------------------------------- |
-| Chromium desktop | Playwright passing locally     | Manual pending                          |
-| Firefox desktop  | Playwright passing locally     | Manual pending                          |
-| WebKit desktop   | Playwright passing in Linux CI | Manual pending                          |
-| iPhone Safari    | —                              | Manual pending — stable release blocker |
-| Android Chrome   | —                              | Manual pending — stable release blocker |
+| Platform         | Automated coverage               | Manual coverage                  |
+| ---------------- | -------------------------------- | -------------------------------- |
+| Chromium desktop | Required Playwright matrix       | Not part of the release evidence |
+| Firefox desktop  | Required Playwright matrix       | Not part of the release evidence |
+| WebKit desktop   | Required Playwright matrix       | Not part of the release evidence |
+| iPhone Safari    | No physical-device run performed | Not performed                    |
+| Android Chrome   | No physical-device run performed | Not performed                    |
 
-For each platform, calibrate input, textarea, RTL, internal scroll, wrap boundaries, trailing spaces, emoji, contenteditable boundaries, pointer movement, and IME composition using `/lab.html`. Record device, OS, and browser versions. Do not promote to stable until both mobile rows are verified.
+The automated matrix exercises inputs, textareas, RTL and internal scrolling,
+wrap boundaries, trailing spaces, Unicode, contenteditable boundaries, shadow
+trees, iframes, selection movement, and composition lifecycle behavior. WebKit
+automation is not evidence from a physical iPhone or iPad.
 
-For the floating-popup integration, also verify typing, arrow/pointer caret
-movement, textarea internal scroll, page and nested-container scroll, keyboard
-open/close, and orientation changes. Confirm the cyan caret marker and orange
-positioned popup remain associated. These mobile scenarios remain **Manual
-pending** until recorded on physical devices.
+No human screen-reader session was performed. The library does not render an
+interface or change focus semantics, but applications remain responsible for
+the accessibility of popups and other UI positioned from its geometry.
+
+For application-specific qualification, use `/lab.html` to test the required
+devices and browsers. Include keyboard appearance, zoom, orientation changes,
+page and nested-container scrolling, typography, pointer selection, and IME
+composition where those conditions apply.

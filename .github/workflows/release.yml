@@ -1,25 +1,78 @@
 name: Release
+
 on:
-  push:
-    tags: ["v*"]
+  release:
+    types: [published]
+
 permissions:
   contents: read
-  id-token: write
+
+concurrency:
+  group: npm-nipe-solutions-caret-geometry-stable
+  cancel-in-progress: false
+
 jobs:
-  publish:
-    runs-on: ubuntu-latest
-    environment: npm
+  verify:
+    if: github.event.release.prerelease == false
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    outputs:
+      tarball: ${{ steps.release.outputs.tarball }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
         with:
-          {
-            node-version: 24,
-            registry-url: "https://registry.npmjs.org",
-            cache: npm,
-          }
+          fetch-depth: 0
+      - run: git merge-base --is-ancestor HEAD origin/main
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: package-lock.json
       - run: npm ci
-      - run: npx playwright install --with-deps chromium firefox webkit
       - run: npm run check
+      - run: npx playwright install --with-deps chromium firefox webkit
       - run: npm run test:browser
-      - run: npm publish --access public --provenance
+      - id: release
+        run: npm run release:check -- --dry-run --output release-artifact
+      - uses: actions/upload-artifact@v7
+        with:
+          name: npm-package-stable
+          path: release-artifact
+          if-no-files-found: error
+          retention-days: 7
+
+  publish:
+    needs: verify
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    environment: npm
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+      - uses: actions/download-artifact@v7
+        with:
+          name: npm-package-stable
+          path: release-artifact
+      - env:
+          RELEASE_TARBALL: ${{ needs.verify.outputs.tarball }}
+          RELEASE_CHANNEL: latest
+        run: |
+          set -euo pipefail
+          test "$RELEASE_CHANNEL" = latest
+          test "$RELEASE_TARBALL" = nipe-solutions-caret-geometry-1.0.0.tgz
+          cd release-artifact
+          test -f "$RELEASE_TARBALL"
+          tarballs=(*.tgz)
+          manifests=(*.sha512)
+          test "${#tarballs[@]}" -eq 1
+          test "${#manifests[@]}" -eq 1
+          test "${manifests[0]}" = "$RELEASE_TARBALL.sha512"
+          checksum_line=$(<"${manifests[0]}")
+          [[ "$checksum_line" =~ ^([a-f0-9]{128})\ \ (.+)$ ]]
+          test "${BASH_REMATCH[2]}" = "$RELEASE_TARBALL"
+          sha512sum --check --strict "${manifests[0]}"
+          npm publish --ignore-scripts --provenance --access public --tag latest "$RELEASE_TARBALL"

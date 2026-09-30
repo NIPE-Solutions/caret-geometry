@@ -228,3 +228,44 @@ test("observer avoids marker mutation during active composition", async ({
   });
   expect(result).toBe(0);
 });
+
+test("marker fallback preserves an empty text node and selection", async ({
+  page,
+}) => {
+  const result = await page.evaluate(() => {
+    const { getCaretRect } = (window as any).__caretGeometry;
+    const editable = document.createElement("div");
+    editable.contentEditable = "true";
+    editable.style.cssText = "min-height:24px;font:18px sans-serif";
+    const text = document.createTextNode("");
+    editable.append(text);
+    document.body.append(editable);
+
+    const range = document.createRange();
+    range.setStart(text, 0);
+    range.collapse(true);
+    const selection = getSelection()!;
+    selection.setBaseAndExtent(text, 0, text, 0);
+
+    const rect = getCaretRect(range);
+    return {
+      rect,
+      sameOnlyChild:
+        editable.childNodes.length === 1 && editable.firstChild === text,
+      textData: text.data,
+      anchorPreserved:
+        selection.anchorNode === text && selection.anchorOffset === 0,
+      focusPreserved:
+        selection.focusNode === text && selection.focusOffset === 0,
+      markerCount: editable.querySelectorAll("[data-caret-geometry-marker]")
+        .length,
+    };
+  });
+
+  expect(result.rect).not.toBeNull();
+  expect(result.sameOnlyChild).toBe(true);
+  expect(result.textData).toBe("");
+  expect(result.anchorPreserved).toBe(true);
+  expect(result.focusPreserved).toBe(true);
+  expect(result.markerCount).toBe(0);
+});

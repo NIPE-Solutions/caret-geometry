@@ -1,11 +1,15 @@
 import { isUsableRect, normalizeCaretRect } from "./rect";
 import type { CaretEdge, CaretRect } from "./types";
 
-export function collapseRange(range: Range, edge?: CaretEdge): Range {
+export function assertRangeEdge(range: Range, edge?: CaretEdge): void {
   if (!range.collapsed && !edge)
     throw new TypeError(
       'A non-collapsed Range requires edge: "start" or "end".',
     );
+}
+
+export function collapseRange(range: Range, edge?: CaretEdge): Range {
+  assertRangeEdge(range, edge);
   const result = range.cloneRange();
   result.collapse(edge === "start");
   return result;
@@ -40,6 +44,11 @@ function neighboringRect(range: Range): CaretRect | null {
 function markerRect(range: Range): CaretRect | null {
   const doc = range.startContainer.ownerDocument;
   if (!doc || !range.startContainer.isConnected) return null;
+  const container = range.startContainer;
+  const textSnapshot =
+    container.nodeType === 3
+      ? { node: container as Text, data: container.textContent ?? "" }
+      : null;
   const marker = doc.createElement("span");
   marker.setAttribute("aria-hidden", "true");
   marker.dataset.caretGeometryMarker = "";
@@ -51,12 +60,18 @@ function markerRect(range: Range): CaretRect | null {
   const anchorOffset = selection?.anchorOffset ?? 0;
   const focusNode = selection?.focusNode ?? null;
   const focusOffset = selection?.focusOffset ?? 0;
+  let splitSibling: ChildNode | null = null;
   try {
     range.insertNode(marker);
+    if (textSnapshot) splitSibling = marker.nextSibling;
     const rect = marker.getBoundingClientRect();
     return isUsableRect(rect) ? normalizeCaretRect(rect) : null;
   } finally {
     marker.remove();
+    if (textSnapshot) {
+      splitSibling?.remove();
+      textSnapshot.node.data = textSnapshot.data;
+    }
     if (selection && anchorNode && focusNode) {
       try {
         selection.setBaseAndExtent(
