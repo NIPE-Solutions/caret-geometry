@@ -1,17 +1,33 @@
 # Release readiness
 
-## Classification: ALPHA READY
+## Classification: stable
 
-Version `0.1.0-alpha.0` is suitable for public experimental use. The API and browser behavior may still change before beta.
+Version `1.0.0` defines the supported public API and browser contract. Changes
+outside that contract remain possible and are documented in
+[`compatibility.md`](compatibility.md).
 
-Evidence recorded on 2026-09-06:
+Evidence recorded for the stable release:
 
-- 11 unit checks pass.
-- 33 real-browser checks pass in Linux CI: 11 each in Chromium, Firefox, and WebKit.
-- The same 22 Chromium/Firefox checks pass locally.
-- Packed ESM and CommonJS consumer installations pass from the actual tarball.
-- SSR imports have no DOM side effects.
-- The tarball has zero runtime dependencies and excludes tests, website, fixtures, and coverage output.
-- The public calibration site is deployed through Vercel with a verified GoDaddy CNAME.
+- 27 unit tests cover validation, geometry primitives, fallback restoration,
+  observer teardown, and public type integration.
+- The 93-case browser matrix covers Chromium, Firefox, and WebKit. It includes
+  text controls, Range, Selection, editable roots, shadow trees, iframes, RTL
+  scrolling, scaled controls, search controls, observer lifecycle, and site
+  integration behavior.
+- Automated Chromium, Firefox, and WebKit coverage was performed, and all
+  three engines remain required pull-request and release gates.
+- The packed artifact is installed into isolated ESM, CommonJS, and NodeNext
+  TypeScript consumers. A DOM-free server import is checked separately.
+- The eight-file package inventory is exact, has zero runtime dependencies,
+  and is checked against compressed and unpacked size budgets.
+- Publication reuses the verified checksummed tarball and requires npm trusted
+  publishing with provenance.
 
-Beta requires a broader exactness corpus for RTL, search decorations, transforms, nested editable boundaries, and typography. Stable remains blocked by manual iPhone Safari and Android Chrome validation, real-device IME calibration, and resolution of any severe geometry regressions found during alpha.
+The release does not claim device or assistive-technology certification. No
+physical iPhone or Android run was performed. No human screen-reader session
+was performed. Consumers serving those environments should test their own
+interaction, viewport, keyboard, zoom, and accessibility requirements.
+
+Browser-specific behavior and geometry outside the supported contract remain
+listed in [`compatibility.md`](compatibility.md) and
+[`browser-notes.md`](browser-notes.md).

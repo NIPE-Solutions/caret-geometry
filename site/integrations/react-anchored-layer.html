@@ -24,14 +24,14 @@
       <h1>Compatibility status.</h1>
       <p class="lede">
         No production snippet is shown because the current React Anchored Layer
-        alpha accepts real element anchors only. It does not yet expose a
-        virtual-reference contract.
+        API accepts real element anchors only. It does not expose a
+        virtual-reference contract that Caret Geometry can satisfy.
       </p>
       <div class="callout">
         <strong>Verified gap:</strong> Caret Geometry can produce the reference,
         but React Anchored Layer cannot currently consume it. The package is
-        also not yet published to npm. Inventing
-        <code>anchor={caret}</code> here would be misleading.
+        available independently; inventing <code>anchor={caret}</code> here
+        would be misleading.
       </div>
       <h2>The smallest generic enhancement</h2>
       <p>

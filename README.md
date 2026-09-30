@@ -4,7 +4,8 @@ Caret geometry for the web.
 
 Reliable viewport coordinates for carets in inputs, textareas and editable DOM.
 
-[![CI](https://github.com/NIPE-Solutions/caret-geometry/actions/workflows/ci.yml/badge.svg)](https://github.com/NIPE-Solutions/caret-geometry/actions/workflows/ci.yml)
+[![Quality](https://github.com/NIPE-Solutions/caret-geometry/actions/workflows/quality.yml/badge.svg)](https://github.com/NIPE-Solutions/caret-geometry/actions/workflows/quality.yml)
+[![Browsers](https://github.com/NIPE-Solutions/caret-geometry/actions/workflows/browsers.yml/badge.svg)](https://github.com/NIPE-Solutions/caret-geometry/actions/workflows/browsers.yml)
 
 ```bash
 npm install @nipe-solutions/caret-geometry
@@ -60,7 +61,9 @@ portal rendering, overlay semantics, or environmental layout tracking. It
 remains framework-independent, positioning-engine-independent, and has zero
 runtime dependencies.
 
-Current status: **ALPHA READY**. See [release readiness](docs/release-readiness.md) for the evidence and remaining stable-release gates.
+Current status: **stable (1.0.0)**. The supported geometry contract is covered in
+Chromium, Firefox, and WebKit automation. See [release readiness](docs/release-readiness.md)
+for the evidence and the documented limits of that coverage.
 
 Part of [NIPE Open Source](https://opensource.nipesolutions.com) in Browser Primitives.
 

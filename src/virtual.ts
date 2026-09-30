@@ -1,6 +1,15 @@
 import { getCaretRect, getContextElement } from "./get-caret-rect";
-import type { CaretOptions, CaretTarget, CaretVirtualElement } from "./types";
+import type {
+  CaretOptions,
+  CaretOptionsFor,
+  CaretTarget,
+  CaretVirtualElement,
+} from "./types";
 
+export function createCaretVirtualElement<T extends CaretTarget>(
+  target: T,
+  options?: CaretOptionsFor<T>,
+): CaretVirtualElement | null;
 export function createCaretVirtualElement(
   target: CaretTarget,
   options?: CaretOptions,
@@ -8,7 +17,7 @@ export function createCaretVirtualElement(
   let last = getCaretRect(target, options);
   if (!last) return null;
   let valid = true;
-  const contextElement = getContextElement(target);
+  const contextElement = getContextElement(target, options);
   const virtual: CaretVirtualElement = {
     getBoundingClientRect() {
       const next = getCaretRect(target, options);
