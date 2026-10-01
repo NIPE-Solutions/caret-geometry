@@ -600,7 +600,13 @@ button {
   .three-up,
   .responsibility-panels,
   .timeline-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .hero code,
+  .split code,
+  .three-up code,
+  .timeline-grid code {
+    overflow-wrap: anywhere;
   }
   .three-up > * {
     border-right: 0;
