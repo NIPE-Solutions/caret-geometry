@@ -224,6 +224,36 @@ th {
   padding: 16px 24px;
   text-decoration: none;
 }
+.support h2 {
+  margin-bottom: 28px;
+}
+.support p {
+  max-width: 60ch;
+  font-size: 20px;
+  line-height: 1.6;
+}
+.support-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  margin-top: 28px;
+}
+.support-actions a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 14px 20px;
+  border: 1px solid var(--ink);
+}
+.support-actions .support-primary {
+  background: var(--ink);
+  color: white;
+  text-decoration: none;
+}
+.support-actions a:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 4px;
+}
 footer {
   border: 0;
   height: auto;
